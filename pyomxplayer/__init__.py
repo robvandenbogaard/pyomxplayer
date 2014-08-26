@@ -11,12 +11,26 @@ class OMXPlayer(object):
     _STATUS_REGEX = re.compile(r'V :\s*([\d.]+).*')
     _DONE_REGEX = re.compile(r'have a nice day.*')
 
-    _LAUNCH_CMD = 'omxplayer -s %s %s'
-    _PAUSE_CMD = 'p'
-    _TOGGLE_SUB_CMD = 's'
-    _QUIT_CMD = 'q'
-    _PREVIOUS_CMD = 'i'
-    _NEXT_CMD = 'o'
+    _LAUNCH_CMD      = 'omxplayer -s %s %s'
+    _PAUSE_CMD       = 'p'
+    _TOGGLE_SUB_CMD  = 's'
+    _INC_SPEED_CMD   = '1'
+    _DEC_SPEED_CMD   = '2'
+    _PREV_AUDIO_CMD  = 'j'
+    _NEXT_AUDIO_CMD  = 'k'
+    _PREV_SUB_CMD    = 'n'
+    _NEXT_SUB_CMD    = 'm'
+    _QUIT_CMD        = 'q'
+    _PREVIOUS_CMD    = 'i'
+    _NEXT_CMD        = 'o'
+    _DECREASE_VOLUME = '-'
+    _INCREASE_VOLUME = '+'
+    _BACK_30_CMD     = '\x1b[D' #left
+    _BACK_600_CMD    = '\x1b[B' #down
+    _FORWARD_30_CMD  = '\x1b[C' #right
+    _FORWARD_600_CMD = '\x1b[A' #up
+
+
 
 
 
@@ -77,5 +91,38 @@ class OMXPlayer(object):
         self._process.send(self._QUIT_CMD)
         self._process.terminate(force=True)
 
+    def inc_speed(self):
+        self._process.send(self._INC_SPEED_CMD)
+
+    def dec_speed(self):
+        self._process.send(self._DEC_SPEED_CMD)
+
+    def prev_audio(self):
+        self._process.send(self._PREV_AUDIO_CMD)
+
+    def next_audio(self):
+        self._process.send(self._NEXT_AUDIO_CMD)
+
+    def prev_sub(self):
+        self._process.send(self._PREV_SUB_CMD)
+
+    def next_sub(self):
+        self._process.send(self._NEXT_SUB_CMD)
+
     def previous_chapter(self):
         self._process.send(self._PREVIOUS_CMD)
+
+    def next_chapter(self):
+        self._process.send(self._NEXT_CMD)
+
+    def back_30(self):
+        self._process.send(self._BACK_30_CMD)
+
+    def back_600(self):
+        self._process.send(self._BACK_600_CMD)
+
+    def forward_30(self):
+        self._process.send(self._FORWARD_30_CMD)
+
+    def forward_600(self):
+        self._process.send(self._FORWARD_600_CMD)
