@@ -74,8 +74,9 @@ class OMXPlayer(object):
             if timed_out():
                 continue
             elif process_finished():
+                if index == 3 and hasattr(self._stop_callback, '__call__'):
+                    self._stop_callback()
                 break
-                stop_callback()
             else:
                 # Process is still running (happy path)
                 self.position = float(self._process.match.group(1))
