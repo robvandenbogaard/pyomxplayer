@@ -35,12 +35,13 @@ class OMXPlayer(object):
 
 
     def __init__(self, media_file, args=None, start_playback=False,
-                 _parser=OMXPlayerParser, _spawn=pexpect.spawn):
+                 _parser=OMXPlayerParser, _spawn=pexpect.spawn, stop_callback=None):
         self.subtitles_visible = True
         self._spawn = _spawn
         self._launch_omxplayer(media_file, args)
         self.parser = _parser(self._process)
         self._monitor_play_position()
+        self._stop_callback = stop_callback
 
         # By default the process starts playing
         self.paused = False
@@ -73,6 +74,8 @@ class OMXPlayer(object):
             if timed_out():
                 continue
             elif process_finished():
+                if index == 3 and hasattr(self._stop_callback, '__call__'):
+                    self._stop_callback()
                 break
             else:
                 # Process is still running (happy path)
