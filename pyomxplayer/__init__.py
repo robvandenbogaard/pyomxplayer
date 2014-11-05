@@ -10,8 +10,10 @@ from pyomxplayer.parser import OMXPlayerParser
 class OMXPlayer(object):
     _STATUS_REGEX = re.compile(r'V :\s*([\d.]+).*')
     _DONE_REGEX = re.compile(r'have a nice day.*')
+    _DURATION_REGEX = re.compile(r'Duration: (.+?):(.+?):(.+?),')
 
     _LAUNCH_CMD      = 'omxplayer -s %s %s'
+    _INFO_CMD    = 'omxplayer -i %s'
     _PAUSE_CMD       = 'p'
     _TOGGLE_SUB_CMD  = 's'
     _INC_SPEED_CMD   = '1'
@@ -40,6 +42,8 @@ class OMXPlayer(object):
         self._spawn = _spawn
         self._launch_omxplayer(media_file, args)
         self.parser = _parser(self._process)
+        self.duration = self._get_duration()
+        self._info_process.terminate()
         self._monitor_play_position()
         self._stop_callback = stop_callback
 
@@ -54,10 +58,24 @@ class OMXPlayer(object):
             args = ''
         cmd = self._LAUNCH_CMD % (media_file, args)
         self._process = self._spawn(cmd)
+        info_cmd = self._INFO_CMD % (media_file)
+        self._info_process = self._spawn(info_cmd)
 
     def _monitor_play_position(self):
         self._position_thread = Thread(target=self._get_position)
         self._position_thread.start()
+
+    def _get_duration(self):
+        output = self._info_process.read()
+        matches = self._DURATION_REGEX.search(output)
+        if matches:
+            duration_info = matches.groups()
+            hours = int(re.sub('\x1b.*?m', '', duration_info[0]))
+            minutes = int(re.sub('\x1b.*?m', '', duration_info[1]))
+            seconds = float(re.sub('\x1b.*?m', '', duration_info[2]))
+            return int(hours*60*60*1000000 + minutes*60*1000000 + seconds*1000000)
+        else:
+            return 0
 
     def _get_position(self):
         while True:
