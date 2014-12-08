@@ -100,6 +100,9 @@ class OMXPlayer(object):
                 self.position = float(self._process.match.group(1))
             sleep(0.05)
 
+    def is_running(self):
+        return self._process.isalive()
+
     def toggle_pause(self):
         if self._process.send(self._PAUSE_CMD):
             self.paused = not self.paused
