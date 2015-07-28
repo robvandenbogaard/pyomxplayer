@@ -8,7 +8,7 @@ from pyomxplayer.parser import OMXPlayerParser
 
 
 class OMXPlayer(object):
-    _STATUS_REGEX = re.compile(r'V :\s*([\d.]+).*')
+    _STATUS_REGEX = re.compile(r'M:\s*([\d.]+).*')
     _DONE_REGEX = re.compile(r'have a nice day.*')
     _DURATION_REGEX = re.compile(r'Duration: (.+?):(.+?):(.+?),')
 
@@ -97,7 +97,7 @@ class OMXPlayer(object):
                 break
             else:
                 # Process is still running (happy path)
-                self.position = float(self._process.match.group(1))
+                self.position = float(self._process.match.group(1)) / 1000000
             sleep(0.05)
 
     def is_running(self):
