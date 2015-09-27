@@ -12,7 +12,7 @@ class OMXPlayer(object):
     _DONE_REGEX = re.compile(r'have a nice day.*')
     _DURATION_REGEX = re.compile(r'Duration: (.+?):(.+?):(.+?),')
 
-    _LAUNCH_CMD      = 'omxplayer -s %s %s'
+    _LAUNCH_CMD      = 'omxplayer --no-osd -s %s %s'
     _INFO_CMD    = 'omxplayer -i %s'
     _PAUSE_CMD       = 'p'
     _TOGGLE_SUB_CMD  = 's'
