@@ -12,12 +12,13 @@ CPU overhead is rather low (~3% for the Python process on my development RPi)
 and the object-oriented design makes it easy to re-use in other projects.
 
 Installation:
+(assuming you're the pi user and you want to install system wide!)
 -------------
 ::
 
     git clone https://github.com/karlg100/pyomxplayer.git
     pushd pyomxplayer
-    python setup.py install
+    sudo python setup.py install
     popd
 
 Example:
