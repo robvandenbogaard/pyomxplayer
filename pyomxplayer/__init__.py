@@ -93,7 +93,7 @@ class OMXPlayer(object):
             hours = int(re.sub('\x1b.*?m', '', duration_info[0]))
             minutes = int(re.sub('\x1b.*?m', '', duration_info[1]))
             seconds = float(re.sub('\x1b.*?m', '', duration_info[2]))
-            return int(hours*60*60*1000000 + minutes*60*1000000 + seconds*1000000)
+            return int(hours*60*60 + minutes*60 + seconds)
         else:
             return 0
 
