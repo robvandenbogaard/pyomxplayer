@@ -29,25 +29,26 @@ Example:
     >>> from pprint import pprint
     >>> omx = OMXPlayer('/tmp/video.mp4', '--no-osd')
     >>> pprint(omx.__dict__)
-    {'_position_thread': <Thread(Thread-5, started 1089234032)>,
-    '_process': <pexpect.spawn object at 0x1a435d0>,
-    'audio': {'bps': 16,
-            'channels': 2,
-            'decoder': 'mp3',
-            'rate': 48000,
-            'streams': 1},
-    'chapters': 0,
-    'current_audio_stream': 1,
-    'current_volume': 0.0,
-    'paused': True,
-    'position': 0.0,
-    'subtitles': 0,
-    'subtitles_visible': False,
-    'video': {'decoder': 'omx-mpeg4',
-            'dimensions': (640, 272),
-            'fps': 23.976025,
-            'profile': 15,
-            'streams': 1}}
+	{'_info_process': <pexpect.spawn object at 0x76a14390>,
+	 '_position_thread': <Thread(Thread-1, started 1989665904)>,
+	 '_process': <pexpect.spawn object at 0x76a14350>,
+	 '_spawn': <class 'pexpect.spawn'>,
+	 '_stop_callback': None,
+	 'audio': {'bps': 16, 'channels': 2, 'decoder': 'aac', 'rate': 48000},
+	 'current_volume': 0,
+	 'duration': 5894210000L,
+	 'info_output_buffer': None,
+	 'media_file': 'Wall-E.m4v',
+	 'muted': False,
+	 'parser': <pyomxplayer.parser.OMXPlayerParser object at 0x76a14430>,
+	 'paused': True,
+	 'position': 0.0,
+	 'subtitles_visible': False,
+	 'title': 'Wall-E',
+	 'video': {'decoder': 'omx-h264',
+		   'dimensions': (720, 360),
+		   'fps': 25.0,
+		   'profile': 100}}
     >>> omx.toggle_pause()
     >>> omx.position
     9.43
