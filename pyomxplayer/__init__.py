@@ -11,6 +11,7 @@ class OMXPlayer(object):
     _STATUS_REGEX = re.compile(r'M:\s*([\d.]+).*')
     _DONE_REGEX = re.compile(r'have a nice day.*')
     _DURATION_REGEX = re.compile(r'Duration: (.+?):(.+?):(.+?),')
+    _TITLE_REGEX = re.compile(r'title           : (.+?)\r\n')
 
     _LAUNCH_CMD      = 'omxplayer -s %s %s'
     _INFO_CMD    = 'omxplayer -i %s'
@@ -32,21 +33,25 @@ class OMXPlayer(object):
     _FORWARD_30_CMD  = '\x1b[C' #right
     _FORWARD_600_CMD = '\x1b[A' #up
 
-
-
-
-
     def __init__(self, media_file, args=None, start_playback=False,
                  _parser=OMXPlayerParser, _spawn=pexpect.spawn, stop_callback=None):
         self.subtitles_visible = True
         self.muted = False
+	self.info_output_buffer = False
+        self.media_file = media_file
+        #volume in db
+        self.current_volume = 0
         self._spawn = _spawn
         self._launch_omxplayer(media_file, args)
         self.parser = _parser(self._process)
         self.duration = self._get_duration()
+        self.title = self._get_title()
         self._info_process.terminate()
         self._monitor_play_position()
         self._stop_callback = stop_callback
+        self.audio = self.parser.audio
+        self.video = self.parser.video
+        self.info_output_buffer = None
 
         # By default the process starts playing
         self.paused = False
@@ -66,9 +71,23 @@ class OMXPlayer(object):
         self._position_thread = Thread(target=self._get_position)
         self._position_thread.start()
 
+    def _get_info_buffer(self):
+        self.info_output_buffer = self._info_process.read()
+
+    def _get_title(self):
+        if not self.info_output_buffer:
+          self._get_info_buffer()
+        matches = self._TITLE_REGEX.search(self.info_output_buffer)
+        if matches:
+            title_info = matches.groups()
+            return title_info[0]
+        else:
+            return 'No title'
+
     def _get_duration(self):
-        output = self._info_process.read()
-        matches = self._DURATION_REGEX.search(output)
+        if not self.info_output_buffer:
+          self._get_info_buffer()
+        matches = self._DURATION_REGEX.search(self.info_output_buffer)
         if matches:
             duration_info = matches.groups()
             hours = int(re.sub('\x1b.*?m', '', duration_info[0]))
@@ -124,19 +143,23 @@ class OMXPlayer(object):
 
     def inc_vol(self):
         self._process.send(self._INCREASE_VOLUME)
+        # omxplayer walks by 3db
+        self.current_volume += 3
 
     def dec_vol(self):
         self._process.send(self._DECREASE_VOLUME)
+        # omxplayer walks by 3db
+        self.current_volume -= 3
 
     def toggle_mute(self, rate=0):
         if not self.muted:
-            for i in range(1, 25):
-                self._process.send(self._DECREASE_VOLUME)
+            for i in range(0, 25):
+                self.dec_vol()
                 sleep(rate)
 	    self.muted = True
         else:
-            for i in range(1, 25):
-                self._process.send(self._INCREASE_VOLUME)
+            for i in range(0, 25):
+                self.inc_vol()
                 sleep(rate)
 	    self.muted = False
 
