@@ -15,8 +15,10 @@ Installation:
 -------------
 ::
 
-    git clone https://github.com/jbaiter/pyomxplayer.git
-    python pyomxplayer/setup.py install
+    git clone https://github.com/karlg100/pyomxplayer.git
+    pushd pyomxplayer
+    python setup.py install
+    popd
 
 Example:
 --------
@@ -24,7 +26,7 @@ Example:
 
     >>> from pyomxplayer import OMXPlayer
     >>> from pprint import pprint
-    >>> omx = OMXPlayer('/tmp/video.mp4')
+    >>> omx = OMXPlayer('/tmp/video.mp4', '--no-osd')
     >>> pprint(omx.__dict__)
     {'_position_thread': <Thread(Thread-5, started 1089234032)>,
     '_process': <pexpect.spawn object at 0x1a435d0>,
@@ -48,4 +50,5 @@ Example:
     >>> omx.toggle_pause()
     >>> omx.position
     9.43
+    >>> omx.toggle_mute(.1)
     >>> omx.stop()

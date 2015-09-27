@@ -12,7 +12,7 @@ class OMXPlayer(object):
     _DONE_REGEX = re.compile(r'have a nice day.*')
     _DURATION_REGEX = re.compile(r'Duration: (.+?):(.+?):(.+?),')
 
-    _LAUNCH_CMD      = 'omxplayer --no-osd -s %s %s'
+    _LAUNCH_CMD      = 'omxplayer -s %s %s'
     _INFO_CMD    = 'omxplayer -i %s'
     _PAUSE_CMD       = 'p'
     _TOGGLE_SUB_CMD  = 's'
@@ -39,6 +39,7 @@ class OMXPlayer(object):
     def __init__(self, media_file, args=None, start_playback=False,
                  _parser=OMXPlayerParser, _spawn=pexpect.spawn, stop_callback=None):
         self.subtitles_visible = True
+        self.muted = False
         self._spawn = _spawn
         self._launch_omxplayer(media_file, args)
         self.parser = _parser(self._process)
@@ -120,6 +121,24 @@ class OMXPlayer(object):
 
     def dec_speed(self):
         self._process.send(self._DEC_SPEED_CMD)
+
+    def inc_vol(self):
+        self._process.send(self._INCREASE_VOLUME)
+
+    def dec_vol(self):
+        self._process.send(self._DECREASE_VOLUME)
+
+    def toggle_mute(self, rate=0):
+        if not self.muted:
+            for i in range(1, 25):
+                self._process.send(self._DECREASE_VOLUME)
+                sleep(rate)
+	    self.muted = True
+        else:
+            for i in range(1, 25):
+                self._process.send(self._INCREASE_VOLUME)
+                sleep(rate)
+	    self.muted = False
 
     def prev_audio(self):
         self._process.send(self._PREV_AUDIO_CMD)
