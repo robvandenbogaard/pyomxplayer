@@ -151,9 +151,15 @@ class OMXPlayer(object):
         # omxplayer walks by 3db
         self.current_volume -= 3
 
+    def set_vol(self, vol):
+        while vol < self.current_volume:
+            self.dec_vol()
+        if vol > self.current_volume:
+            self.inc_vol()
+
     def toggle_mute(self, rate=0):
         if not self.muted:
-            for i in range(0, 25):
+            while self.current_volume > -75:
                 self.dec_vol()
                 sleep(rate)
 	    self.muted = True
