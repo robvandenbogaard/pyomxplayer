@@ -1,8 +1,9 @@
 import re
 
+
 class OMXPlayerParser(object):
-    _VIDEO_PROPERTIES_REGEX = re.compile(r'.*Video codec ([\w-]+) width (\d+) height (\d+) profile (\d+) fps ([\d.]+).*')
-    _AUDIO_PROPERTIES_REGEX = re.compile(r'Audio codec (\w+) channels (\d+) samplerate (\d+) bitspersample (\d+).*')
+    _VIDEO_PROPERTIES_REGEX = re.compile(b'.*Video codec ([\w-]+) width (\d+) height (\d+) profile (\d+) fps ([\d.]+).*')
+    _AUDIO_PROPERTIES_REGEX = re.compile(b'Audio codec (\w+) channels (\d+) samplerate (\d+) bitspersample (\d+).*')
 
     def __init__(self, process):
         self._process = process
