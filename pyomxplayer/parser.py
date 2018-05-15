@@ -5,14 +5,14 @@ class OMXPlayerParser(object):
     _VIDEO_PROPERTIES_REGEX = re.compile(b'.*Video codec ([\w-]+) width (\d+) height (\d+) profile (\d+) fps ([\d.]+).*')
     _AUDIO_PROPERTIES_REGEX = re.compile(b'Audio codec (\w+) channels (\d+) samplerate (\d+) bitspersample (\d+).*')
 
-    def __init__(self, process):
+    def __init__(self, process, audio_only=False):
         self._process = process
         self.video = False
         self.audio = False
-        self._parse_properties()
+        self._parse_properties(audio_only=audio_only)
 
-    def _parse_properties(self):
-        while (not self.video) or (not self.audio):
+    def _parse_properties(self, audio_only=False):
+        while ((not audio_only) and not self.video) or (not self.audio):
             line = self._process.readline()
             self._parse_video_properties(line)
             self._parse_audio_properties(line)

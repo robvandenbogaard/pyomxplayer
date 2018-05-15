@@ -34,7 +34,8 @@ class OMXPlayer(object):
     _FORWARD_600_CMD = '\x1b[A'  # up
 
     def __init__(self, media_file, args=None, start_playback=False,
-                 _parser=OMXPlayerParser, _spawn=pexpect.spawn, stop_callback=None):
+                 _parser=OMXPlayerParser, _spawn=pexpect.spawn, stop_callback=None,
+                 audio_only=False):
         self.subtitles_visible = True
         self.muted = False
         self.media_file = media_file
@@ -44,7 +45,7 @@ class OMXPlayer(object):
         self.current_volume = 0
         self._spawn = _spawn
         self._launch_omxplayer(media_file, args)
-        self.parser = _parser(self._process)
+        self.parser = _parser(self._process, audio_only=audio_only)
         self.duration = self._get_duration()
         self.title = self._get_title()
         self._info_process.terminate()
